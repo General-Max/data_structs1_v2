@@ -46,7 +46,9 @@ private:
     AVLTree<Team*, SortTeamById> m_validTeams;
     twoWayList<Player*> m_playersListByScore;
 
-    void insert(BinNode<Player*>* newNode);
+    void insertPlayerToList(BinNode<Player*>* newNode);
+
+    void deletePlayerFromList(ListNode<Player*>* nodeToDelete);
 
     bool isValidTeam(Team* team);
 

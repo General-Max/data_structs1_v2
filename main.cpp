@@ -19,6 +19,7 @@ void checkAddPlayer(){
     world.add_player(12, 2, 1, 2, 1, false);
     world.add_player(13, 2, 2, 4, 1, true);
     world.add_player(14, 1, 1, 1, 1, true);
+    world.update_player_stats(10, 0, 5, 1);
 //    world.remove_player(11);
 }
 

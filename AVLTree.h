@@ -32,9 +32,8 @@ private:
 
     BinNode<T> *insertNode(BinNode<T> *newNode, BinNode<T> *currentNode, BinNode<T> *father);
 
-    BinNode<T> *findNode(BinNode<T> *node, const T &data);
-
-    BinNode<T> *findNode(BinNode<T> *node, int id);
+    template<class S>
+    BinNode<T> *findNode(BinNode<T> *node, const S &data);
 
     BinNode<T> *removeNode(BinNode<T> *currentNode, BinNode<T> *nodeToDelete);
 
@@ -76,13 +75,11 @@ public:
     // Interface Functions
     void insert(const T &data);
 
-    BinNode<T> * find(const T &data);
+    template<class S>
+    BinNode<T> * find(const S &data);
 
-    BinNode<T> * find(int id);
-
-    void remove(const T &data);
-
-    void remove(int idOfNodeToDelete);
+    template<class S>
+    void remove(const S &data);
 
     int getHeight() const;
 
@@ -154,8 +151,18 @@ void AVLTree<T, Comparison>::insert(const T& data) {
     m_size++;
 }
 
+//template<class T, class Comparison>
+//BinNode<T> * AVLTree<T, Comparison>::find(const T& data){
+//    BinNode<T>* node = findNode(m_root, data);
+//    if(node == nullptr){
+//        return nullptr;
+//    }
+//    return node;
+//}
+
 template<class T, class Comparison>
-BinNode<T> * AVLTree<T, Comparison>::find(const T& data){
+template<class S>
+BinNode<T> * AVLTree<T, Comparison>::find(const S& data){
     BinNode<T>* node = findNode(m_root, data);
     if(node == nullptr){
         return nullptr;
@@ -163,18 +170,18 @@ BinNode<T> * AVLTree<T, Comparison>::find(const T& data){
     return node;
 }
 
+//template<class T, class Comparison>
+//BinNode<T> * AVLTree<T, Comparison>::find(int id){
+//    BinNode<T>* node = findNode(m_root, id);
+//    if(node == nullptr){
+//        return nullptr;
+//    }
+//    return node;
+//}
 
 template<class T, class Comparison>
-BinNode<T> * AVLTree<T, Comparison>::find(int id){
-    BinNode<T>* node = findNode(m_root, id);
-    if(node == nullptr){
-        return nullptr;
-    }
-    return node;
-}
-
-template<class T, class Comparison>
-void AVLTree<T, Comparison>::remove(const T& data) {
+template <class S>
+void AVLTree<T, Comparison>::remove(const S& data) {
     if (isEmpty() || &data == nullptr) {
         return;
     }
@@ -186,24 +193,6 @@ void AVLTree<T, Comparison>::remove(const T& data) {
 
     m_root = removeNode(node_to_remove, m_root);
     // m_root = removeNode(m_root, node_to_remove);
-    // update minimum and maximum tree nodes
-    m_minValueNode = findMin(m_root);
-    m_maxValueNode = findMax(m_root);
-    m_size--;
-}
-
-template<class T, class Comparison>
-void AVLTree<T, Comparison>::remove(int idOfNodeToDelete) {
-    if (isEmpty()) {
-        return;
-    }
-    BinNode<T>* nodeToRemove = findNode(m_root, idOfNodeToDelete);
-
-    if (nodeToRemove == nullptr) {
-        std::cout << "throw NodeDoesntExist()";
-    }
-
-    m_root = removeNode(nodeToRemove, m_root);
     // update minimum and maximum tree nodes
     m_minValueNode = findMin(m_root);
     m_maxValueNode = findMax(m_root);
@@ -349,10 +338,11 @@ int AVLTree<T, Comparison>::findNewHeight(const BinNode<T> *node) const {
 }
 
 template<class T, class Comparison>
-BinNode<T> *AVLTree<T, Comparison>::findNode(BinNode<T> *node, const T &data) {
+template <class S>
+BinNode<T> *AVLTree<T, Comparison>::findNode(BinNode<T> *node, const S &data) {
     if(node == nullptr)
         return nullptr;
-    if (comparisonFunction.equalTo(data, *node->getData())) {
+    if (comparisonFunction.equalTo(*node->getData(), data)) {
         return node;
     } else {
         if(comparisonFunction.lessThan(*node->getData(), data)){
@@ -362,22 +352,6 @@ BinNode<T> *AVLTree<T, Comparison>::findNode(BinNode<T> *node, const T &data) {
         }
     }
 }
-
-template<class T, class Comparison>
-BinNode<T> *AVLTree<T, Comparison>::findNode(BinNode<T> *node, int id) {
-    if(node == nullptr)
-        return nullptr;
-    if (comparisonFunction.equalTo(*(node->getData()), id)) {
-        return node;
-    } else {
-        if(comparisonFunction.lessThan(*node->getData(), id)){
-            return findNode(node->getRight(), id);
-        } else {
-            return findNode(node->getLeft(), id);
-        }
-    }
-}
-
 
 template<class T, class Comparison>
 BinNode<T> *AVLTree<T, Comparison>::removeNode(BinNode<T> *currentNode, BinNode<T> *nodeToDelete){
