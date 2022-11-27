@@ -260,7 +260,7 @@ void world_cup_t::insert(BinNode<Player *> *newNode) {
     auto* newListNode = new ListNode<Player*>(*newNode->getData());
     (*newNode->getData())->setDequePtr(newListNode);
     // in case it is the first element in the list
-    if (m_numPlayers == 1){
+    if (m_numPlayers == SINGLE_PLAYER){
         m_playersListByScore.setHead(newListNode);
         return;
     }
