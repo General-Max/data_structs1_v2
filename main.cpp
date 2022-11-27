@@ -15,6 +15,11 @@ void checkAddPlayer(){
     world.add_player(10, 1, 0, 0, 0, true);
     world.add_player(11, 1, 1, 2, 0, false);
     world.add_player(12, 2, 1, 2, 1, false);
+    world.remove_player(12);
+    world.add_player(12, 2, 1, 2, 1, false);
+    world.add_player(13, 2, 2, 4, 1, true);
+    world.add_player(14, 1, 1, 1, 1, true);
+//    world.remove_player(11);
 }
 
 int main() {

@@ -25,6 +25,7 @@ public:
     void setTotalCards(int totalCards);
 
     void insertPlayer(Player* player);
+    void removePLayer(Player* player);
     bool isEmptyTeam() const;
     void updatePoints(int points);
 private:

@@ -26,6 +26,7 @@
 const int DRAW = 1;
 const int WIN = 3;
 const int PLAYERS_NUM_IN_VALID_TEAM = 11;
+const int SINGLE_PLAYER = 1;
 class world_cup_t {
 private:
     //
@@ -39,7 +40,6 @@ private:
     //need deque of players
     //AVLTree<Brackets>// the "cosher" teams
     int m_numPlayers;
-    Player* m_topScorer;
     AVLTree<Player*, SortByScore> m_playersByScore;
     AVLTree<Player*, SortById> m_playersById;
     AVLTree<Team*, SortTeamById> m_teams;
@@ -48,7 +48,11 @@ private:
 
     void insert(BinNode<Player*>* newNode);
 
+    bool isValidTeam(Team* team);
+
     void addIfValidTeam(Team* team);
+
+    void removeIfNodValidTeam(Team* team);
 public:
     // <DO-NOT-MODIFY> {
 

@@ -69,3 +69,11 @@ void Team::insertPlayer(Player* player)
 void Team::updatePoints(int points) {
     this->m_points += points;
 }
+
+void Team::removePLayer(Player *player) {
+    m_teamPlayersByID.remove(player);
+    m_teamPlayersByScore.remove(player);
+    m_totalCards-=player->getCards();
+    m_totalGoals-=player->getGoals();
+    m_totalPlayers--;
+}

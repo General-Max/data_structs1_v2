@@ -63,11 +63,6 @@ private:
 
     BinNode<T>* findMax(BinNode<T>* node) const;
 
-    T* getMinValueInTree() const;
-
-    T* getMaxValueInTree() const;
-
-
 public:
     // Constructors, Destructor, Assignment
     AVLTree();
@@ -81,7 +76,7 @@ public:
     // Interface Functions
     void insert(const T &data);
 
-    bool find(const T &data);
+    BinNode<T> * find(const T &data);
 
     BinNode<T> * find(int id);
 
@@ -102,6 +97,10 @@ public:
     void printH(BinNode<T> *node, int space);
 
     void printD(BinNode<T> *node, int space);
+
+    T* getMinValueInTree() const;
+
+    T* getMaxValueInTree() const;
 };
 
 template<class T, class Comparison>
@@ -156,12 +155,12 @@ void AVLTree<T, Comparison>::insert(const T& data) {
 }
 
 template<class T, class Comparison>
-bool AVLTree<T, Comparison>::find(const T& data){
+BinNode<T> * AVLTree<T, Comparison>::find(const T& data){
     BinNode<T>* node = findNode(m_root, data);
     if(node == nullptr){
-        return false;
+        return nullptr;
     }
-    return true;
+    return node;
 }
 
 

@@ -2,7 +2,7 @@
 #include "Team.h"
 #include "Player.h"
 
-world_cup_t::world_cup_t() :m_topScorer(nullptr), m_numPlayers(0)
+world_cup_t::world_cup_t() : m_numPlayers(0)
 {
     //and add the rest
     //TODO: יש טעם להוסיף את האחרים או שזה כבר אותחל?
@@ -68,21 +68,22 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         return StatusType::FAILURE;
     }
     try{
-        auto* newPlayer = new Player(playerId, teamId, gamesPlayed, goals, cards, goalKeeper);
         Team* currentTeam = *m_teams.find(teamId)->getData();
+        auto* newPlayer = new Player(playerId, teamId, gamesPlayed-currentTeam->getPlayedTogether(),
+                                     goals, cards, goalKeeper);
+        currentTeam->setPlayedTogether(0);
         newPlayer->setTeamPtr(currentTeam);
         m_playersById.insert(newPlayer);
         m_playersByScore.insert(newPlayer);
-
-        std::cout << "players by id: " <<std::endl;
-        m_playersByScore.printD(m_playersById.getRoot(), 10);
-        std::cout << "players by id: " <<std::endl;
-        m_playersByScore.printD(m_playersByScore.getRoot(), 10);
-
+        m_numPlayers++;
 
         currentTeam->insertPlayer(newPlayer);
         addIfValidTeam(currentTeam);
-        insert(m_playersById.find(playerId));
+        insert(m_playersByScore.find(newPlayer));
+//        std::cout << "players by id: " <<std::endl;
+//        m_playersByScore.printD(m_playersById.getRoot(), 10);
+//        std::cout << "players by id: " <<std::endl;
+//        m_playersByScore.printD(m_playersByScore.getRoot(), 10);
         m_playersListByScore.printList();
     }
     catch(std::bad_alloc&){
@@ -98,7 +99,26 @@ StatusType world_cup_t::remove_player(int playerId)
     if(playerId<=0){
         return StatusType::INVALID_INPUT;
     }
-
+    if(m_playersById.find(playerId) == nullptr){
+        return StatusType::FAILURE;
+    }
+    try{
+        Player* playerToRemove = *m_playersById.find(playerId)->getData();
+        Team* playerTeam = playerToRemove->getTeamPtr();
+        m_playersById.remove(playerId);
+        m_playersListByScore.deleteNode(playerToRemove->getDequePtr());
+        m_playersByScore.remove(playerToRemove);
+        playerTeam->removePLayer(playerToRemove);
+//        std::cout << "AFTER REMOVE players by id: " <<std::endl;
+//        m_playersByScore.printD(m_playersById.getRoot(), 10);
+//        std::cout << "AFTER REMOVE players by score: " <<std::endl;
+       // m_playersByScore.printD(m_playersByScore.getRoot(), 10);
+        m_playersListByScore.printList();
+        m_numPlayers--;
+    }
+    catch(std::bad_alloc&){
+        return StatusType::ALLOCATION_ERROR;
+    }
     return StatusType::SUCCESS;
 }
 
@@ -164,8 +184,9 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
         if(m_numPlayers==0){
             return output_t<int>(StatusType::FAILURE);
         }
-
-        return output_t<int>(m_topScorer->getPlayerId());
+        //this is the top scorer player
+        Player * p = *m_playersByScore.getMaxValueInTree();
+        //return output_t<int>();
     }
 
     //search for the team if couldnt find throw error
@@ -217,9 +238,21 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
     return 2;
 }
 
+bool world_cup_t::isValidTeam(Team *team) {
+    return (team->getTotalPlayers()>PLAYERS_NUM_IN_VALID_TEAM);
+}
+
 void world_cup_t::addIfValidTeam(Team *team) {
-    if (team->getTotalPlayers()>PLAYERS_NUM_IN_VALID_TEAM && m_validTeams.find(team->getTeamId()) == nullptr){
+    // if the team keeps the valid teams condition and is not in the tree
+    if (isValidTeam(team) && m_validTeams.find(team->getTeamId()) == nullptr){
         m_validTeams.insert(team);
+    }
+}
+
+void world_cup_t::removeIfNodValidTeam(Team *team) {
+// if the team doesn't keep the valid teams condition and is in the tree
+    if (!isValidTeam(team) && m_validTeams.find(team->getTeamId()) != nullptr){
+        m_validTeams.remove(team);
     }
 }
 
@@ -227,19 +260,25 @@ void world_cup_t::insert(BinNode<Player *> *newNode) {
     auto* newListNode = new ListNode<Player*>(*newNode->getData());
     (*newNode->getData())->setDequePtr(newListNode);
     // in case it is the first element in the list
-    if (!newNode->getFather()){
+    if (m_numPlayers == 1){
         m_playersListByScore.setHead(newListNode);
         return;
     }
     //wont work because it will create a new FatherListNodeEveryTime
     //auto* fatherListNode = new ListNode<Player*>(*newNode->getFather()->getData());
-
-    Player* p = *newNode->getFather()->getData();
-    if(SortByScore::lessThan(*(newNode->getFather())->getData(), *newNode->getData())){
-        m_playersListByScore.insertAfter(newListNode, p->getDequePtr());
+    if(newNode->getFather() != nullptr){
+        if(SortByScore::lessThan(*(newNode->getFather())->getData(), *newNode->getData())){
+            m_playersListByScore.insertAfter(newListNode, (*(newNode->getFather())->getData())->getDequePtr());
+        }
+        else{
+            m_playersListByScore.insertBefore(newListNode, (*(newNode->getFather())->getData())->getDequePtr());
+        }
+    }
+    else if(newNode->getRight()){
+        m_playersListByScore.insertBefore(newListNode, (*newNode->getRight()->getData())->getDequePtr());
     }
     else{
-        m_playersListByScore.insertBefore(newListNode, p->getDequePtr());
+        m_playersListByScore.insertAfter(newListNode, (*newNode->getRight()->getData())->getDequePtr());
     }
 }
 
