@@ -129,7 +129,7 @@ AVLTree<T, Comparison>& AVLTree<T, Comparison>::operator=(const AVLTree<T, Compa
 
 template<class T, class Comparison>
 AVLTree<T, Comparison>::AVLTree(const AVLTree<T, Comparison>& tree):m_root(nullptr), m_minValueNode(nullptr), m_maxValueNode(nullptr),
-            m_size(tree.getSize()){
+                                                                    m_size(tree.getSize()){
     // todo: check if can be added to the comprehension list
     m_root = copyNode(tree.getRoot());
     m_minValueNode = findMin(m_root);
@@ -159,7 +159,6 @@ template<class T, class Comparison>
 bool AVLTree<T, Comparison>::find(const T& data){
     BinNode<T>* node = findNode(m_root, data);
     if(node == nullptr){
-        std::cout << "throw NodeDoesntExist()";
         return false;
     }
     return true;
@@ -170,7 +169,6 @@ template<class T, class Comparison>
 BinNode<T> * AVLTree<T, Comparison>::find(int id){
     BinNode<T>* node = findNode(m_root, id);
     if(node == nullptr){
-        std::cout << "throw NodeDoesntExist()";
         return nullptr;
     }
     return node;
@@ -188,7 +186,7 @@ void AVLTree<T, Comparison>::remove(const T& data) {
     }
 
     m_root = removeNode(node_to_remove, m_root);
-   // m_root = removeNode(m_root, node_to_remove);
+    // m_root = removeNode(m_root, node_to_remove);
     // update minimum and maximum tree nodes
     m_minValueNode = findMin(m_root);
     m_maxValueNode = findMax(m_root);

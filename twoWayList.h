@@ -6,26 +6,26 @@
 #define DATA_STRUCTRS_WET1_TWOWAYLIST_H
 #include "ListNode.h"
 #include <iostream>
-#include "sortingTreeMethods.h"
+#include "SortByScore.h"
 
 template<class T>
 class twoWayList{
 private:
     ListNode<T>* m_head;
     SortByScore m_comparisonFunction;
- //   ListNode<T>* tail;
+    //   ListNode<T>* tail;
 public:
     twoWayList();
     ~twoWayList();
 //
-//    ListNode<T>* getHead();
+    ListNode<T>* getHead();
 //    ListNode<T>* getnext();
 //
-//    void setHead(ListNode<T>* newHeadNode);
+    void setHead(ListNode<T>* newHeadNode);
 //    void setTail(ListNode<T>* newTailNode);
-    void insert(BinNode<T>* newNode);
-    void insertAfter(ListNode<T>* newNode, ListNode<T>* prevNode = nullptr);
-    void insertBefore(ListNode<T>* newNode, ListNode<T>* nextNode = nullptr);
+
+    void insertAfter(ListNode<T>* newNode, ListNode<T>* prevNode);
+    void insertBefore(ListNode<T>* newNode, ListNode<T>* nextNode);
     void deleteNode(ListNode<T>* nodeToDelete);
 
     void printList();
@@ -47,24 +47,8 @@ twoWayList<T>::~twoWayList()
 }
 
 template <class T>
-void twoWayList<T>::insert(BinNode<T>* newNode){
-    BinNode<T>* father = newNode->getFather();
-    auto* fatherListNode = new ListNode<T>(father->getData());
-    auto* newListNode = new ListNode<T>(newNode->getData());
-    if(m_comparisonFunction.lessThan(father->getData(), newNode->getData())){
-        insertAfter(newListNode, fatherListNode);
-    }
-    else{}
-    insertBefore(newListNode, fatherListNode);
-}
-
-template <class T>
 void twoWayList<T>::insertAfter(ListNode<T>* newNode, ListNode<T>* prevNode)
 {
-    if (!prevNode){
-        this->m_head =newNode;
-        return;
-    }
     ListNode<T>* nextNode = prevNode->getNext();
     newNode->setNext(nextNode);
     prevNode->setNext(newNode);
@@ -77,11 +61,6 @@ void twoWayList<T>::insertAfter(ListNode<T>* newNode, ListNode<T>* prevNode)
 template <class T>
 void twoWayList<T>::insertBefore(ListNode<T>* newNode, ListNode<T> *nextNode)
 {
-    // in case it is the first element in the list
-    if (!nextNode){
-        this->m_head = newNode;
-        return;
-    }
     ListNode<T>* prevNode = nextNode->getPrev();
     if(prevNode){
         newNode->setNext(nextNode);
@@ -123,12 +102,23 @@ void twoWayList<T>::deleteNode(ListNode<T>* nodeToDelete)
 template<class T>
 void twoWayList<T>::printList()
 {
-    ListNode<T>* temp = this->m_head;
+    std::cout << **this->m_head->getData() <<  "-> ";
+    ListNode<T>* temp = this->m_head->getNext();
     while(temp != nullptr){
         std::cout << **temp->getData() <<  "-> ";
         temp = temp->getNext();
     }
     std::cout << std::endl;
+}
+
+template<class T>
+void twoWayList<T>::setHead(ListNode<T> *newHeadNode) {
+    this->m_head = newHeadNode;
+}
+
+template<class T>
+ListNode<T> *twoWayList<T>::getHead() {
+    return m_head;
 }
 
 #endif //DATA_STRUCTRS_WET1_TWOWAYLIST_H

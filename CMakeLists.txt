@@ -8,15 +8,15 @@ include_directories(.)
 add_executable(data_structrs_wet1_main
         AVLTree.h
         BinNode.h
-        Deque.h
-        DoubleNode.h
         ListNode.h
         main.cpp
         Node.h
         Player.cpp
         Player.h
-        sortingTreeMethods.cpp
-        sortingTreeMethods.h
+        SortById.h
+        SortById.cpp
+        SortByScore.h
+        SortByScore.cpp
         SortTeamById.cpp
         SortTeamById.h
         Team.cpp

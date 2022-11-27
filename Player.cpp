@@ -2,7 +2,7 @@
 #include "Team.h"
 
 Player::Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalkeeper) : m_playerId(playerId),
-m_teamId(teamId), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_goalKeeper(goalkeeper){}
+                                                                                                   m_teamId(teamId), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_goalKeeper(goalkeeper){}
 
 int Player::getPlayerId() const {
     return this->m_playerId;
@@ -31,7 +31,7 @@ int Player::getCards() const {
 ostream& operator<<(ostream& os, const Player& player)
 {
     os << "player id: " <<  player.getPlayerId() << ", goals: " << player.getGoals() << ", cards: "
-    << player.getCards();
+       << player.getCards();
     return os;
 }
 
@@ -49,6 +49,22 @@ void Player::updateCards(int newCardsNumber) {
 
 void Player::setGoalKeeper(bool isGoalKeeper) {
     this->m_goalKeeper = isGoalKeeper;
+}
+
+ListNode<Player *>* Player::getDequePtr() {
+    return m_dequePtr;
+}
+
+void Player::setDequePtr(ListNode<Player*>* newDequePtr) {
+    this->m_dequePtr = newDequePtr;
+}
+
+void Player::setTeamPtr(Team *teamPtr) {
+    m_team_ptr = teamPtr;
+}
+
+Team *Player::getTeamPtr() {
+    return m_team_ptr;
 }
 
 

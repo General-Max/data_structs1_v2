@@ -24,6 +24,12 @@ public:
 
     bool getGoalKeeper() const;
 
+    Team* getTeamPtr();
+
+    ListNode<Player*>* getDequePtr();
+
+    void setDequePtr(ListNode<Player*>* newDequePtr);
+
     friend ostream& operator<<(ostream& os, const Player& player);
 
     void updateGamesPlayed(int newGamedNumber);
@@ -35,6 +41,7 @@ public:
     //TODO: CHECK IF NEED
     void setGoalKeeper(bool isGoalKeeper);
 
+    void setTeamPtr(Team* teamPtr);
 private:
     int m_playerId;
     int m_teamId;
@@ -43,7 +50,7 @@ private:
     int m_cards;
     bool m_goalKeeper;
     Team* m_team_ptr;
-    ListNode<Player*> m_dequePtr;
+    ListNode<Player*>* m_dequePtr;
 };
 
 #endif // EX1_Player_H
