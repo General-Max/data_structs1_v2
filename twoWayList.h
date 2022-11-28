@@ -26,7 +26,7 @@ public:
 
     void insertAfter(ListNode<T>* newNode, ListNode<T>* prevNode);
     void insertBefore(ListNode<T>* newNode, ListNode<T>* nextNode);
-    void deleteNode(ListNode<T>* nodeToDelete);
+    void removeNode(ListNode<T>* nodeToDelete);
 
     void printList();
 };
@@ -76,7 +76,7 @@ void twoWayList<T>::insertBefore(ListNode<T>* newNode, ListNode<T> *nextNode)
 }
 
 template <class T>
-void twoWayList<T>::deleteNode(ListNode<T>* nodeToDelete)
+void twoWayList<T>::removeNode(ListNode<T>* nodeToDelete)
 {
     if(nodeToDelete == nullptr){
         std::cout<< "error in deleting node from a list" << std::endl;
@@ -96,7 +96,6 @@ void twoWayList<T>::deleteNode(ListNode<T>* nodeToDelete)
         nextNode->setPrev(prevNode);
     }
 
-    delete nodeToDelete;
 }
 
 template<class T>

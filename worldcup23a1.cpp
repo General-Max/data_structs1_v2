@@ -2,11 +2,7 @@
 #include "Team.h"
 #include "Player.h"
 
-world_cup_t::world_cup_t() : m_numPlayers(0)
-{
-    //and add the rest
-    //TODO: יש טעם להוסיף את האחרים או שזה כבר אותחל?
-}
+world_cup_t::world_cup_t() : m_numPlayers(0) {}
 
 world_cup_t::~world_cup_t()
 {
@@ -105,8 +101,8 @@ StatusType world_cup_t::remove_player(int playerId)
     try{
         Player* playerToRemove = *m_playersById.find(playerId)->getData();
         Team* playerTeam = playerToRemove->getTeamPtr();
+        m_playersListByScore.removeNode(playerToRemove->getDequePtr());
         m_playersById.remove(playerId);
-        m_playersListByScore.deleteNode(playerToRemove->getDequePtr());
         m_playersByScore.remove(playerToRemove);
         playerTeam->removePLayer(playerToRemove);
 //        std::cout << "AFTER REMOVE players by id: " <<std::endl;
@@ -136,7 +132,7 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
         Player* currentPlayer = *m_playersById.find(playerId)->getData();
         Team* currentTeam = currentPlayer->getTeamPtr();
         m_playersByScore.remove(currentPlayer);
-        deletePlayerFromList(currentPlayer->getDequePtr());
+        m_playersListByScore.removeNode(currentPlayer->getDequePtr());
         currentTeam->removePLayer(currentPlayer);
 
         currentPlayer->updateGamesPlayed(gamesPlayed);
@@ -302,7 +298,4 @@ void world_cup_t::insertPlayerToList(BinNode<Player *> *newNode) {
     }
 }
 
-void world_cup_t::deletePlayerFromList(ListNode<Player*> *nodeToDelete) {
-    m_playersListByScore.deleteNode(nodeToDelete);
-}
 

@@ -10,7 +10,7 @@ using std::ostream;
 class Player{
 public:
     Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalkeeper); // check for consts
-    ~Player() = default;
+    ~Player();
 
     int getPlayerId() const;
 

@@ -4,6 +4,10 @@
 Player::Player(int playerId, int teamId, int gamesPlayed, int goals, int cards, bool goalkeeper) : m_playerId(playerId),
                                                                                                    m_teamId(teamId), m_gamesPlayed(gamesPlayed), m_goals(goals), m_cards(cards), m_goalKeeper(goalkeeper){}
 
+Player::~Player()
+{
+    delete this->m_dequePtr;
+}
 int Player::getPlayerId() const {
     return this->m_playerId;
 }

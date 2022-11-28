@@ -32,6 +32,7 @@ template <class T>
 Node<T>::~Node()
 {
     delete this->m_data;
+    this->m_data = nullptr;
 }
 
 template<class T>
