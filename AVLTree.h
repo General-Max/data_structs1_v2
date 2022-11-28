@@ -411,7 +411,6 @@ BinNode<T> *AVLTree<T, Comparison>::removeNode(BinNode<T> *currentNode, BinNode<
             nodeToDelete->setData(new T(*temp->getData()));
             nodeToDelete->setRight(removeNode(nodeToDelete, nodeToDelete->getRight()));
         }
-
     }
     else{
         T p1 = *currentNode->getData();

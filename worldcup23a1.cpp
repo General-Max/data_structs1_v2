@@ -149,6 +149,8 @@ StatusType world_cup_t::update_player_stats(int playerId, int gamesPlayed,
         return StatusType::ALLOCATION_ERROR;
     }
 
+    m_playersByScore.printD(m_playersByScore.getRoot(), 10);
+    m_playersListByScore.printList();
     return StatusType::SUCCESS;
 }
 
@@ -257,10 +259,12 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     }
     try{
         if(teamId1==newTeamId){
-            merge(*team1->getData(), *team2->getData());
+            //merge(*team1->getData(), *team2->getData());
+            ;
         }
         else if(teamId2==newTeamId){
-            merge(*team2->getData(), *team1->getData());
+           // merge(*team2->getData(), *team1->getData());
+           ;
         }
         else{
             ;

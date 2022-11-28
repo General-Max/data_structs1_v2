@@ -89,3 +89,7 @@ void Team::removePLayer(Player *player) {
     m_totalPlayers--;
     
 }
+
+int Team::getGoalkeepers() const {
+    return m_goalkeepers;
+}
