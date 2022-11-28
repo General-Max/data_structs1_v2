@@ -62,6 +62,8 @@ private:
 
     BinNode<T>* findMax(BinNode<T>* node) const;
 
+    int auxInOrder(T** array, BinNode<T>* node, int size, int position);
+
 public:
     // Constructors, Destructor, Assignment
     AVLTree();
@@ -98,7 +100,35 @@ public:
     T* getMinValueInTree() const;
 
     T* getMaxValueInTree() const;
+
+    T** inOrderArray();
+
+    
 };
+
+template<class T,class Comparison>
+T** AVLTree<T, Comparison>::inOrderArray()
+{
+    T** array= (T**) malloc(m_size*sizeof(T*));
+    auxInOrder(array, m_root, m_size, 0);
+    return array;
+}
+
+template<class T, class Comparison>
+int AVLTree<T, Comparison>::auxInOrder(T**array, BinNode<T>* node, int size, int position)
+{
+    if(node==nullptr){
+        return position;
+    }
+    position = auxInOrder(array, node->getLeft(), size, position);
+    if(position>=size){
+        return position;
+    }
+    array[position++]=node->getData();
+    return auxInOrder(array, node->getRight(), size, position);
+
+}
+
 
 template<class T, class Comparison>
 AVLTree<T, Comparison>::AVLTree() : m_root(nullptr), m_minValueNode(nullptr), m_maxValueNode(nullptr), m_size(0) {

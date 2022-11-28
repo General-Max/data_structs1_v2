@@ -2,7 +2,7 @@
 #include "Player.h"
 
 Team::Team(int teamId, int points) : m_teamId(teamId),m_points(points), m_playedTogether(0),
-                                     m_totalPlayers(0), m_totalGoals(0), m_totalCards(0) {}
+                                     m_totalPlayers(0), m_totalGoals(0), m_totalCards(0), m_goalkeepers(0) {}
 
 int Team::getTeamId() const
 {
@@ -32,9 +32,9 @@ int Team::getTotalCards() const
     return this->m_totalCards;
 }
 
-void Team::setPlayedTogether(int playedTogether)
+void Team::increasePlayedTogether()
 {
-    this->m_playedTogether = playedTogether;
+    this->m_playedTogether++;
 }
 
 void Team::setTotalPlayers(int totalPlayers)
@@ -58,6 +58,9 @@ bool Team::isEmptyTeam() const {
 
 void Team::insertPlayer(Player* player)
 {
+    if(player->getGoalKeeper()){
+        this->m_goalkeepers++;
+    }
     m_teamPlayersByID.insert(player);
     m_teamPlayersByScore.insert(player);
     m_totalCards+=player->getCards();
@@ -70,10 +73,19 @@ void Team::updatePoints(int points) {
     this->m_points += points;
 }
 
+int Team::getScore() const
+{
+    this->m_points+this->m_totalCards-m_totalCards;
+}
+
 void Team::removePLayer(Player *player) {
+    if(player->getGoalKeeper()){
+        this->m_goalkeepers--;
+    }
     m_teamPlayersByID.remove(player);
     m_teamPlayersByScore.remove(player);
     m_totalCards-=player->getCards();
     m_totalGoals-=player->getGoals();
     m_totalPlayers--;
+    
 }

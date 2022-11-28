@@ -55,6 +55,9 @@ private:
     void addIfValidTeam(Team* team);
 
     void removeIfNodValidTeam(Team* team);
+
+	void merge(Team* target, Team* merged);
+
 public:
     // <DO-NOT-MODIFY> {
 

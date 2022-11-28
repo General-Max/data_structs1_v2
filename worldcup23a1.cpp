@@ -67,7 +67,7 @@ StatusType world_cup_t::add_player(int playerId, int teamId, int gamesPlayed,
         Team* currentTeam = *m_teams.find(teamId)->getData();
         auto* newPlayer = new Player(playerId, teamId, gamesPlayed-currentTeam->getPlayedTogether(),
                                      goals, cards, goalKeeper);
-        currentTeam->setPlayedTogether(0);
+        //currentTeam->setPlayedTogether(0);
         newPlayer->setTeamPtr(currentTeam);
         m_playersById.insert(newPlayer);
         m_playersByScore.insert(newPlayer);
@@ -105,6 +105,7 @@ StatusType world_cup_t::remove_player(int playerId)
         m_playersById.remove(playerId);
         m_playersByScore.remove(playerToRemove);
         playerTeam->removePLayer(playerToRemove);
+        removeIfNodValidTeam(playerTeam);
 //        std::cout << "AFTER REMOVE players by id: " <<std::endl;
 //        m_playersByScore.printD(m_playersById.getRoot(), 10);
 //        std::cout << "AFTER REMOVE players by score: " <<std::endl;
@@ -157,6 +158,30 @@ StatusType world_cup_t::play_match(int teamId1, int teamId2)
     if(teamId1<=0 || teamId2<=0 || teamId1==teamId2){
         return StatusType::INVALID_INPUT;
     }
+    BinNode<Team*>* team1 = m_validTeams.find(teamId1);
+    BinNode<Team*>* team2 = m_validTeams.find(teamId2);
+    
+    if(team1==nullptr || team2==nullptr){
+        return StatusType::FAILURE;
+    }
+    try{
+        if((*team1->getData())->getScore()>(*team2->getData())->getScore()){
+            (*team1->getData())->updatePoints(WIN);
+        }
+        else if((*team1->getData())->getScore()<(*team2->getData())->getScore()){
+            (*team2->getData())->updatePoints(WIN);
+        }
+        else{
+            (*team1->getData())->updatePoints(DRAW);
+            (*team2->getData())->updatePoints(DRAW);
+        }
+        (*team1->getData())->increasePlayedTogether();
+        (*team2->getData())->increasePlayedTogether();
+    }
+    catch(std::bad_alloc&){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    
 
     return StatusType::SUCCESS;
 }
@@ -168,7 +193,26 @@ output_t<int> world_cup_t::get_num_played_games(int playerId)
         return output_t<int>(StatusType::INVALID_INPUT);
     }
 
-    return 22;
+    BinNode<Player*>* player = m_playersById.find(playerId);
+    if(player==nullptr){
+        return StatusType::FAILURE;
+    }
+
+    int played=0;
+    try
+    {
+        played+=(*player->getData())->getGamesPlayed();
+        int playedWithTeam=0;
+        playedWithTeam=(*player->getData())->getTeamPtr()->getPlayedTogether();
+        played+=playedWithTeam;
+    }
+    catch(std::bad_alloc&)
+    {
+        return StatusType::ALLOCATION_ERROR;
+    }
+    
+
+    return played;
 }
 
 output_t<int> world_cup_t::get_team_points(int teamId)
@@ -178,7 +222,23 @@ output_t<int> world_cup_t::get_team_points(int teamId)
         return output_t<int>(StatusType::INVALID_INPUT);
     }
 
-    return 30003;
+    BinNode<Team*>* team = m_teams.find(teamId);
+    if(team==nullptr){
+        return StatusType::FAILURE;
+    }
+
+    int points=0;
+    try
+    {
+        points=(*team->getData())->getPoints();
+    }
+    catch(std::bad_alloc&)
+    {
+        return StatusType::ALLOCATION_ERROR;
+    }
+    
+
+    return points;
 }
 
 StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
@@ -188,8 +248,34 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
         return StatusType::INVALID_INPUT;
     }
 
+    BinNode<Team*>* team1 = m_teams.find(teamId1);
+    BinNode<Team*>* team2 = m_teams.find(teamId2);
+    BinNode<Team*>* newTeam = m_teams.find(newTeamId);
+    
+    if(team1==nullptr || team2==nullptr || ((newTeam!= nullptr && newTeamId!=teamId1) && (newTeam!= nullptr && newTeamId!=teamId2))){
+        return StatusType::FAILURE;
+    }
+    try{
+        if(teamId1==newTeamId){
+            merge(*team1->getData(), *team2->getData());
+        }
+        else if(teamId2==newTeamId){
+            merge(*team2->getData(), *team1->getData());
+        }
+        else{
+            ;
+            //unite(*team1->getData(), *team1->getData(), newTeamId);
+        }
+    
+    }
+    catch(std::bad_alloc&){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    
+
     return StatusType::SUCCESS;
 }
+
 
 output_t<int> world_cup_t::get_top_scorer(int teamId)
 {
@@ -257,7 +343,7 @@ output_t<int> world_cup_t::knockout_winner(int minTeamId, int maxTeamId)
 }
 
 bool world_cup_t::isValidTeam(Team *team) {
-    return (team->getTotalPlayers()>PLAYERS_NUM_IN_VALID_TEAM);
+    return (team->getTotalPlayers()>=PLAYERS_NUM_IN_VALID_TEAM && team->getGoalkeepers()>0);
 }
 
 void world_cup_t::addIfValidTeam(Team *team) {
@@ -297,5 +383,16 @@ void world_cup_t::insertPlayerToList(BinNode<Player *> *newNode) {
         m_playersListByScore.insertAfter(newListNode, (*newNode->getRight()->getData())->getDequePtr());
     }
 }
+
+
+/*
+void world_cup_t::merge(Team* target, Team* merged)
+{
+    while(!merged->isEmptyTeam()){
+
+        target->insertPlayer(merged->)
+    }
+}
+*/
 
 

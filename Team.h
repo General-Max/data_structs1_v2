@@ -18,8 +18,10 @@ public:
     int getTotalPlayers() const;
     int getTotalGoals() const;
     int getTotalCards() const;
+    int getScore() const;
+    int getGoalkeepers() const;
 
-    void setPlayedTogether(int playedTogether);
+    void increasePlayedTogether();
     void setTotalPlayers(int totalPlayers);
     void setTotalGoals(int totalGoals);
     void setTotalCards(int totalCards);
@@ -28,6 +30,7 @@ public:
     void removePLayer(Player* player);
     bool isEmptyTeam() const;
     void updatePoints(int points);
+
 private:
     int m_teamId;
     int m_points;
@@ -35,6 +38,7 @@ private:
     int m_totalPlayers;
     int m_totalGoals;
     int m_totalCards;
+    int m_goalkeepers;
     AVLTree<Player*, SortById> m_teamPlayersByID;
     AVLTree<Player*, SortByScore> m_teamPlayersByScore;
 };
