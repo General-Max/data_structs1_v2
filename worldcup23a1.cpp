@@ -392,7 +392,7 @@ void unite(Team* team1, Team* team2, int newTeamId)
 
     merge(newTeam, team1);
     merge(newTeam, team2);
-    
+
 }
 
 void world_cup_t::merge(Team* target, Team* merged)

@@ -56,9 +56,9 @@ private:
 
     void removeIfNodValidTeam(Team* team);
 
-    void world_cup_t::merge(Team* target, Team* merged);
+    void merge(Team* target, Team* merged);
 
-    void world_cup_t::unite(Team* target, Team* merged, int newTeamId);
+    void unite(Team* target, Team* merged, int newTeamId);
 
     template<class T>
     static void fillNewTree(Team* target, Team* merged, AVLTree<Player* , T>targetTree, AVLTree<Player* , T>mergedTree);
