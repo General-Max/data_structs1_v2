@@ -259,16 +259,14 @@ StatusType world_cup_t::unite_teams(int teamId1, int teamId2, int newTeamId)
     }
     try{
         if(teamId1==newTeamId){
-            //merge(*team1->getData(), *team2->getData());
-            ;
+            merge(*team1->getData(), *team2->getData());
+            
         }
         else if(teamId2==newTeamId){
-           // merge(*team2->getData(), *team1->getData());
-           ;
+           merge(*team2->getData(), *team1->getData());
         }
         else{
-            ;
-            //unite(*team1->getData(), *team1->getData(), newTeamId);
+            unite(*team1->getData(), *team1->getData(), newTeamId);
         }
     
     }
@@ -295,11 +293,6 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
         //this is the top scorer player
         Player * p = *m_playersByScore.getMaxValueInTree();
         //return output_t<int>();
-    }
-    std::cout << "-------------------------\n";
-    Player** arr = m_playersByScore.inOrderArray();
-    for(int i=0;i<m_playersByScore.getSize(); i++){
-        std::cout << *arr[i] << ""<< std::endl;
     }
     //search for the team if couldnt find throw error
     return output_t<int>(6);//should be the id of the top scorer in the team
@@ -393,14 +386,83 @@ void world_cup_t::insertPlayerToList(BinNode<Player *> *newNode) {
 }
 
 
-/*
+void unite(Team* team1, Team* team2, int newTeamId)
+{
+    Team* newTeam = new Team(newTeamId, team1->getPoints()+team2->getPoints());
+
+    merge(newTeam, team1);
+    merge(newTeam, team2);
+    
+}
+
 void world_cup_t::merge(Team* target, Team* merged)
 {
-    while(!merged->isEmptyTeam()){
+    fillNewTree(target, merged, target->getIdTree(), merged->getIdTree());
+    fillNewTree(target, merged, target->getScoreTree(), merged->getScoreTree());
+    target->updatePoints(merged->getPoints());
 
-        target->insertPlayer(merged->)
+    m_teams.remove(merged);
+    removeIfNodValidTeam(merged);
+}
+
+template<class T>
+static void fillNewTree(Team* target, Team* merged, AVLTree<Player* , T>targetTree, AVLTree<Player* , T>mergedTree)
+{
+    int sizeTarget = targetTree.getSize();
+    int sizeMerged = mergedTree.getSize();  
+    int size = sizeTarget+sizeMerged;
+
+    Player** newArray = mergeSortedArrays(targetTree, mergedTree, sizeTarget, sizeMerged);
+    
+    targetTree.emptyTree();
+    mergedTree.emptyTree();
+    
+    for(int i=0;i<size;i++){
+        target->insertPlayer(newArray[i]);
     }
 }
-*/
+
+template<class T>
+static Player** mergeSortedArrays(AVLTree<Player* , T>targetTree, AVLTree<Player* , T>mergedTree,
+                                             int sizeTarget, int sizeMerged)
+{
+    Player** targetArray = targetTree.inOrderArray();
+    Player** mergedArray = mergedTree.inOrderArray();
+
+    
+    int size = sizeTarget+sizeMerged;
+    
+    Player** newTeam = (Player**) malloc(sizeof(Player*)*(size));
+
+    int index1=0;
+    int index2=0;
+    int i=0;
+    while(index1<sizeTarget && index2<sizeMerged){
+        if(T::lessThan(targetArray[index1], mergedArray[index2])){
+            newTeam[i] = targetArray[index1];
+            index1++;
+        }
+        else{
+            newTeam[i] = mergedArray[index2];
+            index2++;
+        }
+        i++;
+    }
+
+    for(int j = index1; j<sizeTarget;j++)
+    {
+        newTeam[i]=targetArray[index1];
+        index1++;
+        i++;
+    }
+
+    for(int j = index2; j<sizeMerged;j++)
+    {
+        newTeam[i]=mergedArray[index1];
+        index2++;
+        i++;
+    }
+}
+
 
 

@@ -93,3 +93,13 @@ void Team::removePLayer(Player *player) {
 int Team::getGoalkeepers() const {
     return m_goalkeepers;
 }
+
+AVLTree<Player*, SortByScore> Team::getScoreTree() const
+{
+    return this->m_teamPlayersByScore;
+}
+
+AVLTree<Player*, SortById> Team::getIdTree() const
+{
+    return this->m_teamPlayersByID;
+}

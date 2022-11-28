@@ -20,6 +20,8 @@ public:
     int getTotalCards() const;
     int getScore() const;
     int getGoalkeepers() const;
+    AVLTree<Player*, SortByScore> getScoreTree() const;
+    AVLTree<Player*, SortById> getIdTree() const;
 
     void increasePlayedTogether();
     void setTotalPlayers(int totalPlayers);
