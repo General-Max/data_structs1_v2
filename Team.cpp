@@ -75,7 +75,7 @@ void Team::updatePoints(int points) {
 
 int Team::getScore() const
 {
-    this->m_points+this->m_totalCards-m_totalCards;
+    return this->m_points+this->m_totalCards-m_totalCards;
 }
 
 void Team::removePLayer(Player *player) {

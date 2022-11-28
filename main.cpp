@@ -37,6 +37,7 @@ void checkAddPlayer(){
     world.play_match(1,2);
     world.update_player_stats(10, 0, 5, 29);
     world.remove_player(11);
+    world.get_top_scorer(1);
 }
 
 void check(){
@@ -56,7 +57,7 @@ void check(){
 
 }
 int main() {
-    check();
+    checkAddPlayer();
     return 0;
 }
 

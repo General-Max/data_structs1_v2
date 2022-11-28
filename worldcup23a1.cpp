@@ -296,7 +296,11 @@ output_t<int> world_cup_t::get_top_scorer(int teamId)
         Player * p = *m_playersByScore.getMaxValueInTree();
         //return output_t<int>();
     }
-
+    std::cout << "-------------------------\n";
+    Player** arr = m_playersByScore.inOrderArray();
+    for(int i=0;i<m_playersByScore.getSize(); i++){
+        std::cout << *arr[i] << ""<< std::endl;
+    }
     //search for the team if couldnt find throw error
     return output_t<int>(6);//should be the id of the top scorer in the team
 }
